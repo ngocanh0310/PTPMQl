@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Tính điểm tổng kết";
+}
+
+<h2>Tính điểm tổng kết</h2>
+
+<form method="post">
+    <div>
+        <label>Môn học:</label>
+        <input type="text" name="monHoc" required />
+    </div>
+    <div>
+        <label>Điểm A (60%):</label>
+        <input type="number" name="diemA" step="0.1" required />
+    </div>
+    <div>
+        <label>Điểm B (30%):</label>
+        <input type="number" name="diemB" step="0.1" required />
+    </div>
+    <div>
+        <label>Điểm C (10%):</label>
+        <input type="number" name="diemC" step="0.1" required />
+    </div>
+    <button type="submit">Tính điểm</button>
+</form>
+
+@if (ViewBag.MonHoc != null)
+{
+    <h3>Kết quả:</h3>
+    <p><strong>Môn học:</strong> @ViewBag.MonHoc</p>
+    <p><strong>Điểm tổng kết:</strong> @ViewBag.DiemTongKet</p>
+    <p><strong>Kết luận:</strong> @ViewBag.KetLuan</p>
+}

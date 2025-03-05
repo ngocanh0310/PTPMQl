@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Tính tiền hóa đơn";
+}
+
+<h2>Tính tiền hóa đơn</h2>
+
+<form method="post">
+    <label for="soLuong">Số lượng:</label>
+    <input type="number" name="soLuong" required />
+
+    <label for="donGia">Đơn giá:</label>
+    <input type="number" name="donGia" step="0.01" required />
+
+    <button type="submit">Tính tiền</button>
+</form>
+
+@if (ViewBag.ThanhTien != null)
+{
+    <h3>Kết quả:</h3>
+    <p><strong>Số lượng:</strong> @ViewBag.SoLuong</p>
+    <p><strong>Đơn giá:</strong> @ViewBag.DonGia</p>
+    <p><strong>Tổng tiền:</strong> @ViewBag.ThanhTien</p>
+}
