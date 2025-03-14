@@ -1,0 +1,29 @@
+@model DemoMovie.Models.Employee
+
+<h2>Thông Tin Nhân Viên</h2>
+
+@if (ViewBag.Message != null)
+{
+    <p style="color: green;">@ViewBag.Message</p>
+}
+
+<table>
+    <tr>
+        <td><strong>Mã Nhân Viên:</strong></td>
+        <td>@Model.EmployeeId</td>
+    </tr>
+    <tr>
+        <td><strong>Họ và Tên:</strong></td>
+        <td>@Model.FullName</td>
+    </tr>
+    <tr>
+        <td><strong>Địa Chỉ:</strong></td>
+        <td>@Model.Address</td>
+    </tr>
+    <tr>
+        <td><strong>Tuổi:</strong></td>
+        <td>@Model.Age</td>
+    </tr>
+</table>
+
+<a asp-action="Create">Quay lại</a>

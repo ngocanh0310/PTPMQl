@@ -1,0 +1,37 @@
+@model DemoMovieMovie.Models.DaiLy
+
+<h2>Thông Tin Đại Lý</h2>
+
+@if (ViewBag.Message != null)
+{
+    <p style="color: green;">@ViewBag.Message</p>
+}
+
+<table>
+    <tr>
+        <td><strong>Mã Đại Lý:</strong></td>
+        <td>@Model.MaDaiLy</td>
+    </tr>
+    <tr>
+        <td><strong>Tên Đại Lý:</strong></td>
+        <td>@Model.TenDaiLy</td>
+    </tr>
+    <tr>
+        <td><strong>Địa Chỉ:</strong></td>
+        <td>@Model.DiaChi</td>
+    </tr>
+    <tr>
+        <td><strong>Người Đại Diện:</strong></td>
+        <td>@Model.NguoiDaiDien</td>
+    </tr>
+    <tr>
+        <td><strong>Điện Thoại:</strong></td>
+        <td>@Model.DienThoai</td>
+    </tr>
+    <tr>
+        <td><strong>Mã HTPP:</strong></td>
+        <td>@Model.MaHTPP</td>
+    </tr>
+</table>
+
+<a asp-action="Create">Quay lại</a>
