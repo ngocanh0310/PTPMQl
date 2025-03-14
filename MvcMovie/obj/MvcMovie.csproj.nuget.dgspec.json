@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\NET_CORE_API\\New folder\\MvcMovie\\MvcMovie.csproj": {}
+    "E:\\Net_Core_API\\PTPMQl\\MvcMovie\\MvcMovie.csproj": {}
   },
   "projects": {
-    "E:\\NET_CORE_API\\New folder\\MvcMovie\\MvcMovie.csproj": {
+    "E:\\Net_Core_API\\PTPMQl\\MvcMovie\\MvcMovie.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\NET_CORE_API\\New folder\\MvcMovie\\MvcMovie.csproj",
+        "projectUniqueName": "E:\\Net_Core_API\\PTPMQl\\MvcMovie\\MvcMovie.csproj",
         "projectName": "MvcMovie",
-        "projectPath": "E:\\NET_CORE_API\\New folder\\MvcMovie\\MvcMovie.csproj",
+        "projectPath": "E:\\Net_Core_API\\PTPMQl\\MvcMovie\\MvcMovie.csproj",
         "packagesPath": "C:\\Users\\Anh-0\\.nuget\\packages\\",
-        "outputPath": "E:\\NET_CORE_API\\New folder\\MvcMovie\\obj\\",
+        "outputPath": "E:\\Net_Core_API\\PTPMQl\\MvcMovie\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Anh-0\\AppData\\Roaming\\NuGet\\NuGet.Config"
