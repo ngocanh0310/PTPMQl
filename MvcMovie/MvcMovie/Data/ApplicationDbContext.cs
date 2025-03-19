@@ -11,6 +11,8 @@ namespace MvcMovie.Data
         }
 
         public DbSet<Person> Persons { get; set; }
-        public DbSet<Employee> Employees { get; set; } // Thêm dòng này
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<HeThongPhanPhoi> HeThongPhanPhois { get; set; }
+        public DbSet<DaiLy> DaiLys { get; set; }
     }
 }
