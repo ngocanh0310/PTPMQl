@@ -1,60 +1,21 @@
-@model IEnumerable<MvcMovie.Models.Person>
-
+@model List<MvcMovie.Models.Person>
 @{
-    ViewData["Title"] = "Danh sách Person";
+    ViewData["Title"] = "Index";
 }
-
-<h1>Danh sách Person</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Thêm mới</a>
-</p>
-
-<!-- Form upload Excel -->
-<form asp-action="ImportExcel" method="post" enctype="multipart/form-data" class="mb-3">
-    <div class="input-group">
-        <input type="file" name="file" accept=".xlsx, .xls" class="form-control" required />
-        <button type="submit" class="btn btn-success">Upload Excel</button>
-    </div>
-</form>
-
-<!-- Thông báo lỗi hoặc thành công -->
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-
-<!-- Kiểm tra nếu danh sách rỗng -->
-@if (Model.Any())
-{
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.FullName)</th>
-                <th>@Html.DisplayNameFor(model => model.Address)</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.FullName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Address)</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.PersonId" class="btn btn-warning btn-sm">Sửa</a>
-                        <a asp-action="Delete" asp-route-id="@item.PersonId" class="btn btn-danger btn-sm">Xóa</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p class="text-muted">Không có dữ liệu.</p>
-}
+<h2>Index</h2>
+<p><a href="/Person/Create">Create New</a> | <a href="/Person/Import">Import Excel</a></p>
+<table class="table">
+    <tr><th>FullName</th><th>Age</th><th>Address</th><th>Actions</th></tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.FullName</td>
+            <td>@item.Age</td>
+            <td>@item.Address</td>
+            <td>
+                <a href="/Person/Edit/@item.Id">Edit</a> |
+                <a href="/Person/Delete/@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+</table>

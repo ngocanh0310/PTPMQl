@@ -10,29 +10,30 @@ using MvcMovie.Data;
 namespace MvcMovie.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250331064644_Create_table_Person")]
+    [Migration("20250411050857_Create_table_Person")]
     partial class Create_table_Person
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
 
             modelBuilder.Entity("MvcMovie.Models.Person", b =>
                 {
-                    b.Property<string>("PersonId")
+                    b.Property<string>("PersonID")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("Fullname")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("PersonId");
+                    b.HasKey("PersonID");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Person");
                 });
 #pragma warning restore 612, 618
         }

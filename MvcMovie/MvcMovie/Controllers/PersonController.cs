@@ -1,182 +1,96 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MvcMovie.Models;
-using MvcMovie.Data;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
+using MvcMovie.Models.Process;
 using OfficeOpenXml;
+using System.Data;
 
 namespace MvcMovie.Controllers
 {
     public class PersonController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private static List<Person> _people = new List<Person>();
+        private readonly ExcelProcess _excelProcess = new ExcelProcess();
 
-        public PersonController(ApplicationDbContext context)
+        public IActionResult Index()
         {
-            _context = context;
+            return View(_people);
         }
 
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Person.ToListAsync());
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
+        [HttpGet]
+        public IActionResult Create() => View();
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PersonId,FullName,Address")] Person person)
+        public IActionResult Create(Person p)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(person);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _people.Add(p);
+                return RedirectToAction("Index");
             }
-            return View(person);
+            return View(p);
         }
 
-        public async Task<IActionResult> Edit(string id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var person = await _context.Person.FindAsync(id);
-            if (person == null)
-                return NotFound();
-
-            return View(person);
+            var p = _people.FirstOrDefault(x => x.Id == id);
+            return View(p);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PersonId,FullName,Address")] Person person)
+        public IActionResult Edit(Person p)
         {
-            if (id != person.PersonId)
-                return NotFound();
-
-            if (ModelState.IsValid)
+            var person = _people.FirstOrDefault(x => x.Id == p.Id);
+            if (person != null)
             {
-                try
-                {
-                    _context.Update(person);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(person.PersonId))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
+                person.FullName = p.FullName;
+                person.Age = p.Age;
+                person.Address = p.Address;
             }
-            return View(person);
+            return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(string id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var person = await _context.Person.FirstOrDefaultAsync(m => m.PersonId == id);
-            if (person == null)
-                return NotFound();
-
-            return View(person);
+            var p = _people.FirstOrDefault(x => x.Id == id);
+            return View(p);
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var person = await _context.Person.FindAsync(id);
-            if (person != null)
-            {
-                _context.Person.Remove(person);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
+            var p = _people.FirstOrDefault(x => x.Id == id);
+            if (p != null) _people.Remove(p);
+            return RedirectToAction("Index");
         }
 
-        private bool PersonExists(string id)
-        {
-            return _context.Person.Any(e => e.PersonId == id);
-        }
+        [HttpGet]
+        public IActionResult Import() => View();
 
         [HttpPost]
-        public async Task<IActionResult> ImportExcel(IFormFile file)
+        public IActionResult Import(IFormFile file)
         {
-            if (file == null || file.Length == 0)
+            if (file != null && file.Length > 0)
             {
-                ModelState.AddModelError("File", "Vui lòng chọn một file Excel hợp lệ.");
-                return RedirectToAction(nameof(Index));
-            }
+                using var stream = new MemoryStream();
+                file.CopyTo(stream);
+                using var package = new ExcelPackage(stream);
+                DataTable dt = _excelProcess.ExcelToDataTable(package);
 
-            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-            if (!Directory.Exists(uploadFolder))
-                Directory.CreateDirectory(uploadFolder);
-
-            string filePath = Path.Combine(uploadFolder, file.FileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            var dt = new DataTable();
-            using (var package = new ExcelPackage(new FileInfo(filePath)))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                if (worksheet.Dimension == null)
-                    return RedirectToAction(nameof(Index));
-
-                for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
-                    dt.Columns.Add(worksheet.Cells[1, col].Text.Trim());
-
-                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                _people.Clear();
+                foreach (DataRow row in dt.Rows)
                 {
-                    DataRow newRow = dt.NewRow();
-                    for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
-                        newRow[col - 1] = worksheet.Cells[row, col].Text;
-                    dt.Rows.Add(newRow);
-                }
-            }
-
-            List<Person> persons = new List<Person>();
-            var existingIds = _context.Person.Select(p => p.PersonId).ToHashSet();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                if (row.ItemArray.Length >= 3)
-                {
-                    string personId = row[0]?.ToString().Trim();
-                    if (!existingIds.Contains(personId))
+                    _people.Add(new Person
                     {
-                        persons.Add(new Person
-                        {
-                            PersonId = personId,
-                            FullName = row[1]?.ToString().Trim(),
-                            Address = row[2]?.ToString().Trim()
-                        });
-                    }
+                        Id = int.TryParse(row[0]?.ToString(), out int id) ? id : 0,
+                        FullName = row[1]?.ToString() ?? string.Empty,
+                        Age = int.TryParse(row[2]?.ToString(), out int age) ? age : 0,
+                        Address = row[3]?.ToString() ?? string.Empty
+                    });
                 }
+                return RedirectToAction("Index");
             }
-
-            if (persons.Count > 0)
-            {
-                await _context.AddRangeAsync(persons);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
+            ViewBag.Error = "Vui lòng chọn file Excel hợp lệ.";
+            return View();
         }
     }
 }

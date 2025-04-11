@@ -14,22 +14,23 @@ namespace MvcMovie.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
 
             modelBuilder.Entity("MvcMovie.Models.Person", b =>
                 {
-                    b.Property<string>("PersonId")
+                    b.Property<string>("PersonID")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("Fullname")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("PersonId");
+                    b.HasKey("PersonID");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Person");
                 });
 #pragma warning restore 612, 618
         }
